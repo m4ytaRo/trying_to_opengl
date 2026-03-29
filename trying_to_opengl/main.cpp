@@ -22,8 +22,9 @@ int main() {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // These lines tells library GLFW to request to create OpenGL context of version 3.3 (runtime)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
 
     GLfloat vertices[] = {
         -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
@@ -31,15 +32,16 @@ int main() {
         0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f
     };
 
-
-
     GLFWwindow* window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
+    // glfwCreateWindow atomically (for user) creates both a window and its associated context
+    // in fact these are 2 low-level operations
     if (window == NULL) {
         std::cout << "Failed to create a window!\n";
         glfwTerminate();
         return -1;
     }
     glfwMakeContextCurrent(window);
+    // remind: openGL is a state machine
 
     if (!gladLoadGL()) {
         std::cout << "Failed to initialize GLAD" << std::endl;
@@ -49,7 +51,9 @@ int main() {
     }
 
     glViewport(0, 0, 800, 600);
-
+    // Defines the drawing area in pixels. 
+    // It stretches the normalized scene (-1 to +1) to fill the 800x600 region 
+    // starting from the bottom-left corner (0,0).
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -79,6 +83,14 @@ int main() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // configuring the currently bound VAO
+    // 0 - means atribute #0 - position (aPos)
+    // 3 - number of components representing vertex - vec3 (x, y, z) (for texture it will be vec2 - 2, for color - vec4 - 4 (argb))
+    // GL_FLOAT - data type of each component
+    // GL_FALSE - should normilize?
+    // stride = 3 * 4 bytes = 12 bytes
+    // shift for attribute from the beginning of VBO
+
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
