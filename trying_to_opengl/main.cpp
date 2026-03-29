@@ -2,20 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}";
-//Fragment Shader source code
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-"}\n";
+#include "ShaderClass.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
 
 int main() {
     if (!glfwInit()) return -1;
@@ -65,52 +55,18 @@ int main() {
     // It stretches the normalized scene (-1 to +1) to fill the 800x600 region 
     // starting from the bottom-left corner (0,0).
 
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    Shader shaderProgram = Shader("default.vert", "default.frag");
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    VAO VAO1;
+    VAO1.bind();
 
-    GLuint shaderProgram = glCreateProgram();
+    VBO VBO1(vertices, sizeof(vertices));
+    EBO EBO1(indeces, sizeof(indeces));
 
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    GLuint VAO, VBO, EBO;
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indeces), indeces, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // configuring the currently bound VAO
-    // 0 - means atribute #0 - position (aPos)
-    // 3 - number of components representing vertex - vec3 (x, y, z) (for texture it will be vec2 - 2, for color - vec4 - 4 (argb))
-    // GL_FLOAT - data type of each component
-    // GL_FALSE - should normilize?
-    // stride = 3 * 4 bytes = 12 bytes
-    // shift for attribute from the beginning of VBO
-
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // if you place this line before the previous one, nothing will be drawn
+    VAO1.linkVBO(VBO1, 0);
+    VAO1.unbind();
+    VBO1.unbind();
+    EBO1.unbind();
 
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -120,17 +76,17 @@ int main() {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
+        shaderProgram.activate();
+        VAO1.bind();
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
+    VAO1.deactivate();
+    VBO1.deactivate();
+    EBO1.deactivate();
+    shaderProgram.deactivate();
 
     glfwDestroyWindow(window);
     glfwTerminate();
