@@ -16,7 +16,7 @@ public:
     Shader(const char* vertexFile, const char* fragmentFile);
 
     void activate();
-    void deactivate();
+    void destroy();
 };
 
 #endif

@@ -13,7 +13,7 @@ public:
     void linkVBO(VBO& VBO, GLuint layout);
     void bind();
     void unbind();
-    void deactivate();
+    void destroy();
 
 };
 

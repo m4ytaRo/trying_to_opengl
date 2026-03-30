@@ -28,7 +28,7 @@ void VAO::unbind()
 }
 
 // Deletes the VAO
-void VAO::deactivate()
+void VAO::destroy()
 {
 	glDeleteVertexArrays(1, &ID);
 }

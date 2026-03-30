@@ -21,7 +21,7 @@ void VBO::unbind()
 }
 
 // Deletes the VBO
-void VBO::deactivate()
+void VBO::destroy()
 {
 	glDeleteBuffers(1, &ID);
 }

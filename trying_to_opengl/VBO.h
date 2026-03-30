@@ -11,7 +11,7 @@ public:
 
     void bind();
     void unbind();
-    void deactivate();
+    void destroy();
 
 };
 

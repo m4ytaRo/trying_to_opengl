@@ -60,13 +60,18 @@ int main() {
     VAO VAO1;
     VAO1.bind();
 
+
     VBO VBO1(vertices, sizeof(vertices));
-    EBO EBO1(indeces, sizeof(indeces));
+    EBO EBO1;
+    EBO1.bind();
+    EBO1.loadData(indeces, sizeof(indeces));
 
     VAO1.linkVBO(VBO1, 0);
+    
     VAO1.unbind();
     VBO1.unbind();
     EBO1.unbind();
+    // оказывается можно EBO1.unbind(); хоть и метод static
 
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -83,10 +88,10 @@ int main() {
         glfwPollEvents();
     }
 
-    VAO1.deactivate();
-    VBO1.deactivate();
-    EBO1.deactivate();
-    shaderProgram.deactivate();
+    VAO1.destroy();
+    VBO1.destroy();
+    EBO1.destroy();
+    shaderProgram.destroy();
 
     glfwDestroyWindow(window);
     glfwTerminate();
