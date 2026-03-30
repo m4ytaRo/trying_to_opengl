@@ -17,13 +17,13 @@ int main() {
     //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
 
     GLfloat vertices[] = {
-        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,    // lower left corner
-        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,     //lower right corner
-        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,   // upper corner
+        -0.5f,      -0.5f * float(sqrt(3)) / 3,     0.0f,   0.8f,    0.2f,      0.1f,           // lower left corner
+        0.5f,       -0.5f * float(sqrt(3)) / 3,     0.0f,   0.9f,    0.125f,    0.1f,           //lower right corner
+        0.0f,       0.5f * float(sqrt(3)) * 2 / 3,  0.0f,   0.8f,    0.782f,    0.4568f,        // upper corner
 
-        -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,    //inner left
-        0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,     //inner right
-        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f          //inner down
+        -0.5f / 2,  0.5f * float(sqrt(3)) / 6,      0.0f,   0.8f,    0.2f,     0.1f,            //inner left
+        0.5f / 2,   0.5f * float(sqrt(3)) / 6,      0.0f,   0.9f,    0.125f,   0.1f,            //inner right
+        0.0f,       -0.5f * float(sqrt(3)) / 3,     0.0f,   0.8f,    0.782f,   0.4568f,         //inner down
     };
 
     GLuint indeces[] = {
@@ -66,7 +66,8 @@ int main() {
     EBO1.bind();
     EBO1.loadData(indeces, sizeof(indeces));
 
-    VAO1.linkVBO(VBO1, 0);
+    VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+    VAO1.linkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     
     VAO1.unbind();
     VBO1.unbind();

@@ -1,10 +1,10 @@
 #include"VAO.h"
 
 // Links a VBO to the VAO using a certain layout
-void VAO::linkVBO(VBO& VBO, GLuint layout)
+void VAO::linkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
 	VBO.bind();
-	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
 	glEnableVertexAttribArray(layout);
 	VBO.unbind();
 }
