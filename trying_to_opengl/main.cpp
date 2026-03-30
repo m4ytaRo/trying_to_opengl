@@ -72,7 +72,8 @@ int main() {
     VAO1.unbind();
     VBO1.unbind();
     EBO1.unbind();
-    // оказывается можно EBO1.unbind(); хоть и метод static
+    
+    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -83,6 +84,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         shaderProgram.activate();
+        glUniform1f(uniID, 0.5f);
         VAO1.bind();
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);

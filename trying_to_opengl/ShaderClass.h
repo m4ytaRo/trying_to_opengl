@@ -32,6 +32,8 @@ public:
 
     void activate();
     void destroy();
+
+	void checkForCompileErrors(unsigned int shader, const char* type);
 };
 
 #endif
