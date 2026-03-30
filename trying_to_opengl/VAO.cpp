@@ -1,11 +1,5 @@
 #include"VAO.h"
 
-// Constructor that generates a VAO ID
-VAO::VAO()
-{
-	glGenVertexArrays(1, &ID);
-}
-
 // Links a VBO to the VAO using a certain layout
 void VAO::linkVBO(VBO& VBO, GLuint layout)
 {
