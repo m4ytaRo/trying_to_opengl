@@ -18,22 +18,18 @@ int main() {
     //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
 
     GLfloat vertices[] = {
-        -0.5f,      -0.5f * float(sqrt(3)) / 3,     0.0f,   0.8f,    0.2f,      0.1f,           // lower left corner
-        0.5f,       -0.5f * float(sqrt(3)) / 3,     0.0f,   0.9f,    0.125f,    0.1f,           //lower right corner
-        0.0f,       0.5f * float(sqrt(3)) * 2 / 3,  0.0f,   0.8f,    0.782f,    0.4568f,        // upper corner
-
-        -0.5f / 2,  0.5f * float(sqrt(3)) / 6,      0.0f,   0.8f,    0.2f,     0.1f,            //inner left
-        0.5f / 2,   0.5f * float(sqrt(3)) / 6,      0.0f,   0.9f,    0.125f,   0.1f,            //inner right
-        0.0f,       -0.5f * float(sqrt(3)) / 3,     0.0f,   0.8f,    0.782f,   0.4568f,         //inner down
+        -0.5f,          -0.5f,      0.0f,   1.0f,    0.0f,      0.0f,           // lower left corner
+        0.5f,           -0.5f,      0.0f,   0.0f,    1.0f,      0.0f,           // lower left corner
+        0.5f,           0.5f,       0.0f,   0.0f,    0.0f,      1.0f,           // lower left corner
+        -0.5f,          0.5f,       0.0f,   1.0f,    0.0f,      0.0f,           // lower left corner
     };
 
     GLuint indeces[] = {
-        0, 3, 5,
-        3, 2, 4,
-        5, 4, 1
+        0, 1, 2,
+        2, 3, 0
     };
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 800, "Test", NULL, NULL);
     // glfwCreateWindow atomically (for user) creates both a window and its associated context
     // in fact these are 2 low-level operations
     if (window == NULL) {
@@ -51,9 +47,9 @@ int main() {
         return -1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 800, 800);
     // Defines the drawing area in pixels. 
-    // It stretches the normalized scene (-1 to +1) to fill the 800x600 region 
+    // It stretches the normalized scene (-1 to +1) to fill the 800x800 region 
     // starting from the bottom-left corner (0,0).
 
     Shader shaderProgram = Shader("default.vert", "default.frag");
@@ -85,9 +81,9 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         shaderProgram.activate();
-        glUniform1f(uniID, 0.5f);
+        glUniform1f(uniID, 0.0f);
         VAO1.bind();
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
