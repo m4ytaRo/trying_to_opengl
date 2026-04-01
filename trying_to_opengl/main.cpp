@@ -4,6 +4,7 @@
 #include <stb/stb_image.h>
 
 #include "ShaderClass.h"
+#include "Texture.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
@@ -73,37 +74,8 @@ int main() {
     
     GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(window);
-
-    int imgWidth, imgHeight, numColCh;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* bytes = stbi_load("water16x.png", &imgWidth, &imgHeight, &numColCh, 0);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    GLenum format = (numColCh == 4) ? GL_RGBA : GL_RGB;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, bytes);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    stbi_image_free(bytes);
-
-    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
-    shaderProgram.activate();
-    glUniform1i(tex0Uni, 0);
+    Texture texWater("water16x.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_UNSIGNED_BYTE);
+    texWater.texUnit(shaderProgram, "tex0", 0);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -111,7 +83,7 @@ int main() {
 
         shaderProgram.activate();
         glUniform1f(uniID, 0.0f);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        texWater.bind();
         VAO1.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
@@ -122,7 +94,7 @@ int main() {
     VBO1.destroy();
     EBO1.destroy();
     shaderProgram.destroy();
-    glDeleteTextures(1, &texture);
+    texWater.destroy();
 
     glfwDestroyWindow(window);
     glfwTerminate();
