@@ -18,10 +18,10 @@ int main() {
     //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
 
     GLfloat vertices[] = {
-        -0.5f,          -0.5f,      0.0f,   1.0f,    0.0f,      0.0f,           // lower left corner
-        0.5f,           -0.5f,      0.0f,   0.0f,    1.0f,      0.0f,           // lower left corner
-        0.5f,           0.5f,       0.0f,   0.0f,    0.0f,      1.0f,           // lower left corner
-        -0.5f,          0.5f,       0.0f,   1.0f,    0.0f,      0.0f,           // lower left corner
+        -0.5f,          -0.5f,      0.0f,   1.0f,    0.0f,      0.0f,       0.0f, 1.0f,      // left upper
+        0.5f,           -0.5f,      0.0f,   0.0f,    1.0f,      0.0f,       1.0f, 1.0f,      // right upper
+        0.5f,           0.5f,       0.0f,   0.0f,    0.0f,      1.0f,       1.0f, 0.0f,      // right lower corner
+        -0.5f,          0.5f,       0.0f,   1.0f,    0.0f,      0.0f,       0.0f, 0.0f,      // left lower corner
     };
 
     GLuint indeces[] = {
@@ -63,8 +63,9 @@ int main() {
     EBO1.bind();
     EBO1.loadData(indeces, sizeof(indeces));
 
-    VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-    VAO1.linkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+    VAO1.linkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    VAO1.linkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     
     VAO1.unbind();
     VBO1.unbind();
@@ -77,6 +78,7 @@ int main() {
     glfwSwapBuffers(window);
 
     int imgWidth, imgHeight, numColCh;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* bytes = stbi_load("water16x.png", &imgWidth, &imgHeight, &numColCh, 0);
 
     GLuint texture;
@@ -90,12 +92,18 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    GLenum format = (numColCh == 4) ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
     stbi_image_free(bytes);
+
+    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
+    shaderProgram.activate();
+    glUniform1i(tex0Uni, 0);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -103,6 +111,7 @@ int main() {
 
         shaderProgram.activate();
         glUniform1f(uniID, 0.0f);
+        glBindTexture(GL_TEXTURE_2D, texture);
         VAO1.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
