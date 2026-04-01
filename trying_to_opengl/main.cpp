@@ -76,6 +76,27 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwSwapBuffers(window);
 
+    int imgWidth, imgHeight, numColCh;
+    unsigned char* bytes = stbi_load("water16x.png", &imgWidth, &imgHeight, &numColCh, 0);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    stbi_image_free(bytes);
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -92,6 +113,7 @@ int main() {
     VBO1.destroy();
     EBO1.destroy();
     shaderProgram.destroy();
+    glDeleteTextures(1, &texture);
 
     glfwDestroyWindow(window);
     glfwTerminate();
