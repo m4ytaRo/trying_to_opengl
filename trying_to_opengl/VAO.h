@@ -7,7 +7,7 @@
 class VAO
 {
 public:
-    GLuint ID;
+    GLuint ID = 0;
 	VAO(){ glGenVertexArrays(1, &ID); }
 
 	~VAO() { destroy(); }

@@ -6,7 +6,7 @@
 class EBO
 {
 public:
-	GLuint ID;
+	GLuint ID = 0;
 	EBO() { glGenBuffers(1, &ID); }
 	EBO(GLuint* indices, GLsizeiptr size)
 	{

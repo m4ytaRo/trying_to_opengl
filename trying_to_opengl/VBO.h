@@ -6,7 +6,7 @@
 class VBO
 {
 public:
-    GLuint ID;
+    GLuint ID = 0;
 	VBO(GLfloat* vertices, GLsizeiptr size)
 	{
 		glGenBuffers(1, &ID);

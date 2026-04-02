@@ -51,3 +51,7 @@ void Texture::destroy()
 {
 	glDeleteTextures(1, &ID);
 }
+
+Texture::~Texture() {
+	destroy();
+}
