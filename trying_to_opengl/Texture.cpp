@@ -27,7 +27,9 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum pixelTyp
 
 	stbi_image_free(bytes);
 
-	glBindTexture(texType, 0);
+	unbind();
+
+
 }
 
 void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
