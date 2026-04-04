@@ -8,8 +8,4 @@
 
 ###Решение
 
-
-
 ![](C:\Users\may\AppData\Roaming\marktext\images\2026-04-04-03-01-59-image.png)
-
-
