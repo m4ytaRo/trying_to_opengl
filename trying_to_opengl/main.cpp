@@ -26,16 +26,24 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
 
-    GLfloat vertices[] = {
-        -0.5f,          -0.5f,      0.0f,   1.0f,    0.0f,      0.0f,       0.0f, 1.0f,      // left upper
-        0.5f,           -0.5f,      0.0f,   0.0f,    1.0f,      0.0f,       1.0f, 1.0f,      // right upper
-        0.5f,           0.5f,       0.0f,   0.0f,    0.0f,      1.0f,       1.0f, 0.0f,      // right lower corner
-        -0.5f,          0.5f,       0.0f,   1.0f,    0.0f,      0.0f,       0.0f, 0.0f,      // left lower corner
+    GLfloat vertices[] =
+    { //     COORDINATES     /        COLORS      /   TexCoord  //
+        -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+         0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+         0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
     };
 
-    GLuint indeces[] = {
+    // Indices for vertices order
+    GLuint indices[] =
+    {
         0, 1, 2,
-        2, 3, 0
+        0, 2, 3,
+        0, 1, 4,
+        1, 2, 4,
+        2, 3, 4,
+        3, 0, 4
     };
 
     GLFWwindow* window = glfwCreateWindow(800, 800, "Test", NULL, NULL);
@@ -70,7 +78,7 @@ int main() {
     VBO VBO1(vertices, sizeof(vertices));
     EBO EBO1;
     EBO1.bind();
-    EBO1.loadData(indeces, sizeof(indeces));
+    EBO1.loadData(indices, sizeof(indices));
 
     VAO1.linkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
     VAO1.linkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -108,7 +116,7 @@ int main() {
         glUniform1f(uniID, 0.0f);
         texWater.bind();
         VAO1.bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
