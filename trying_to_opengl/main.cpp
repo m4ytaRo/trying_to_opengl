@@ -90,7 +90,7 @@ int main() {
     
     GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
-    Texture texWater("water16x.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_UNSIGNED_BYTE);
+    Texture texWater("bricks16x.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_UNSIGNED_BYTE);
     texWater.texUnit(shaderProgram, "tex0", 0);
 
     while (!glfwWindowShouldClose(window)) {
