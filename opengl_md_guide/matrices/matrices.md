@@ -1,7 +1,5 @@
 бОльшая часть материала взята с https://learnopengl.com/Getting-started/Transformations
 
-
-
 ### Масштабирование
 
 Считаем, что понятия матрицы, вектора, простейшие операции с этими структурами уже известны
@@ -12,9 +10,9 @@
 
 Обратим внимание, что 4 координата в ДАННОМ случае не используется прямо, хотя далее она окажет нам большую услугу
 
-
-
 ### Перенос (Translation)
+
+Операция переноса в 3D пространстве - это нелинейная операция, ее нельзя представить через 3x3 матрицу. Решение - ввести 4 компоненту и перейти *гомогенным* координатам
 
 Обозначим вектор переноса как ![](assets/2026-04-05-13-59-57-image.png) и определим матрицу переноса
 
@@ -27,6 +25,24 @@ The `w` component of a vector is also known as a homogeneous coordinate. To g
 
 Also, whenever the homogeneous coordinate is equal to `0`, the vector is specifically known as a direction vector since a vector with a `w` coordinate of `0` cannot be translated.
 
+Взглянем на код
 
+```cpp
+view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+```
+
+Естественно, операция оптимизирована и высчитавается только 4 столбец
+
+```cpp
+	template<typename T, qualifier Q>
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR mat<4, 4, T, Q> translate(mat<4, 4, T, Q> const& m, vec<3, T, Q> const& v)
+	{
+		mat<4, 4, T, Q> Result(m);
+		Result[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
+		return Result;
+	}
+```
+
+### Rotation
 
 
