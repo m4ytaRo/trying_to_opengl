@@ -27,5 +27,3 @@
 ### Источники
 
 [Core Language (GLSL) - OpenGL Wiki](https://wikis.khronos.org/opengl/Core_Language_(GLSL))
-
-

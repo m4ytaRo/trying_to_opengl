@@ -89,6 +89,32 @@ glGenerateMipmap(texType);
 
 ![](assets/2026-04-04-14-50-17-image.png)
 
+### Использование текстуры
+
+```cpp
+    Texture texWater("bricks16x.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_UNSIGNED_BYTE);
+    texWater.texUnit(shaderProgram, "tex0", 0);
+```
+
+Метод texUnit осуществляет передачу текстуры в unit как uniform
+
+```cpp
+void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
+{
+	GLuint texUni = glGetUniformLocation(shader.ID, uniform);
+	shader.activate();
+	glUniform1i(texUni, unit);
+}
+```
+
+Обратим внимание, что 
+
+```cpp
+shader.activate()
+```
+
+Здесь необходим, поскольку в сущности метод `activate()` это обертка state-changing функции `glUseProgram(ID)`, которая ставит программу №`ID` как текущую.
+
 ### Ограничения
 
 Спецификация явно запрещает использование двух разных типов семплеров из одного текстурного блока. Предполагаемый результат : undefined behaviour
