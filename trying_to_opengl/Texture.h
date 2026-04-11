@@ -20,6 +20,9 @@ public:
 	Texture& operator=(Texture&&) = delete;
 	// found out it is similar to Texture& operator=(Texture&& tex) = delete;
 
+	/**
+	 * @brief links texture unit to uniform in shader
+	 */
 	void texUnit(Shader& shader, const char* uniform, GLuint unit);
 	void bind();
 	void unbind();
