@@ -18,9 +18,7 @@
 
 > Uniforms are implicitly constant, within the shader (though they are not [Constant Expressions](https://wikis.khronos.org/opengl/Constant_Expression "Constant Expression")). Attempting to change them with shader code will result in a compiler error. Similarly, you cannot pass a uniform as an out or inout [parameter to a function](https://wikis.khronos.org/opengl/Function_Parameter "Function Parameter").
 
-*Термин run-time constant не является общепринятым*
-
-![](assets/2026-04-11-18-09-03-image.png)
+![](assets/2026-04-11-18-19-29-image.png)
 
 ### Работа с uniforms
 
