@@ -83,7 +83,7 @@ glTexImage2D(texType, 0, format, widthImg, heightImg, 0, format, pixelType, byte
 glGenerateMipmap(texType);
 ```
 
-Для mipmap создается $ floor(log2(max(width, height))) + 1 $ изображений
+Для mipmap создается $floor(log2(max(width, height))) + 1$ изображений
 
 Напомним, что **Mipmap** — это цепочка уменьшенных копий текстуры для оптимизации в зависимости от дистанции рендера
 
