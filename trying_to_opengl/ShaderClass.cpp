@@ -52,13 +52,15 @@ void Shader::destroy() {
 	glDeleteProgram(ID);
 }
 
-void Shader::checkForCompileErrors(unsigned int shader, const char* type)
+void Shader::checkForCompileErrors(GLuint shader, const char* type)
 {
-	// Stores status of compilation
 	GLint hasCompiled;
-	// Character array to store error message in
 	char infoLog[1024];
-	if (type != "PROGRAM")
+	if (strcmp(type, "PROGRAM") != 0)
+		// referring to opengl youtube tutorial
+		// type != "PROGRAM" will basically compare 2 adresses (type is const char*, not std::string)
+		// so the condition will be always true
+		// thats why we need to change it to  strcmp(type, "PROGRAM") != 0
 	{
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
 		if (hasCompiled == GL_FALSE)

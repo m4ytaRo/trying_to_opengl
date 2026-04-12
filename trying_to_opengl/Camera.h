@@ -23,7 +23,7 @@ public:
     glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
-    // right because we use Right-Hand Grip Rule
+    // right because we use Right-Hand Grip Rule: rotating from orientation vector to up vector
 
     int width;
     int height;
