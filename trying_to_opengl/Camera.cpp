@@ -17,7 +17,7 @@ void Camera::registerInputs(GLFWwindow* window) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		position += speed * -glm::normalize(glm::cross(orientation, up));
+		position += speed * -right;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
@@ -25,7 +25,7 @@ void Camera::registerInputs(GLFWwindow* window) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		position += speed * glm::normalize(glm::cross(orientation, up));
+		position += speed * right;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
@@ -61,7 +61,8 @@ void Camera::registerInputs(GLFWwindow* window) {
 		float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
 		float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
 
-		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
+		
+		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), right);
 
 		if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
 		{
@@ -69,6 +70,7 @@ void Camera::registerInputs(GLFWwindow* window) {
 		}
 
 		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+		right = glm::normalize(glm::cross(orientation, up));
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
