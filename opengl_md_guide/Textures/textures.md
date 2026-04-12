@@ -101,9 +101,9 @@ glGenerateMipmap(texType);
 ```cpp
 void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
 {
-	GLuint texUni = glGetUniformLocation(shader.ID, uniform);
-	shader.activate();
-	glUniform1i(texUni, unit);
+    GLuint texUni = glGetUniformLocation(shader.ID, uniform);
+    shader.activate();
+    glUniform1i(texUni, unit);
 }
 ```
 

@@ -104,7 +104,7 @@ int main() {
 
         shaderProgram.activate();
 
-        camera.inputs(window);
+        camera.registerInputs(window);
 
         camera.matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
