@@ -23,6 +23,7 @@ public:
     glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::mat4 cameraMatrix = glm::mat4(1.0f);
     // right because we use Right-Hand Grip Rule: rotating from orientation vector to up vector
 
     int width;
@@ -35,7 +36,8 @@ public:
 
     Camera(int width, int height, glm::vec3 position) : width(width), height(height), position(position) {};
 
-    void matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
+    void updateMatrix (float FOVdeg, float nearPlane, float farPlane);
+    void exportMatrix(Shader& shader, const char* uniform);
     void registerInputs(GLFWwindow* window);
 
 };

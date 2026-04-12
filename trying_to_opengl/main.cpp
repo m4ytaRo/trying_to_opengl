@@ -15,6 +15,55 @@
 
 #include "Camera.h"
 
+// Vertices coordinates
+GLfloat vertices[] =
+{ //     COORDINATES     /        COLORS      /   TexCoord  //
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
+};
+
+// Indices for vertices order
+GLuint indices[] =
+{
+    0, 1, 2,
+    0, 2, 3,
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4
+};
+
+GLfloat lightVertices[] =
+{ //     COORDINATES     //
+    -0.1f, -0.1f,  0.1f,
+    -0.1f, -0.1f, -0.1f,
+     0.1f, -0.1f, -0.1f,
+     0.1f, -0.1f,  0.1f,
+    -0.1f,  0.1f,  0.1f,
+    -0.1f,  0.1f, -0.1f,
+     0.1f,  0.1f, -0.1f,
+     0.1f,  0.1f,  0.1f
+};
+
+GLuint lightIndices[] =
+{
+    0, 1, 2,
+    0, 2, 3,
+    0, 4, 7,
+    0, 7, 3,
+    3, 7, 6,
+    3, 6, 2,
+    2, 6, 5,
+    2, 5, 1,
+    1, 5, 4,
+    1, 4, 0,
+    4, 5, 6,
+    4, 6, 7
+};
+
 int main() {
 
     const unsigned int SCR_WIDTH = 800;
@@ -27,26 +76,6 @@ int main() {
     // These lines tells library GLFW to request to create OpenGL context of version 3.3 (runtime)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //This line tells GLFW to request a Core Profile context, which excludes deprecated OpenGL functionality
-
-    GLfloat vertices[] =
-    { //     COORDINATES     /        COLORS      /   TexCoord  //
-        -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-        -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-         0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-         0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-         0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
-    };
-
-    // Indices for vertices order
-    GLuint indices[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 1, 4,
-        1, 2, 4,
-        2, 3, 4,
-        3, 0, 4
-    };
 
     GLFWwindow* window = glfwCreateWindow(800, 800, "Test", NULL, NULL);
     // glfwCreateWindow atomically (for user) creates both a window and its associated context
@@ -90,6 +119,40 @@ int main() {
     VBO1.unbind();
     EBO1.unbind();
 
+    Shader lightShader("light.vert", "light.frag");
+
+    VAO lightVAO;
+    lightVAO.bind();
+
+    VBO lightVBO(lightVertices, sizeof(lightVertices));
+    EBO lightEBO;
+    lightEBO.bind();
+    lightEBO.loadData(lightIndices, sizeof(lightIndices));
+
+    lightVAO.linkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
+    lightVAO.unbind();
+    lightVBO.unbind();
+    lightEBO.unbind();
+
+    glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::mat4 lightModel = glm::mat4(1.0f);
+    lightModel = glm::translate(lightModel, lightPos);
+
+    glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::mat4 pyramidModel = glm::mat4(1.0f);
+    pyramidModel = glm::translate(pyramidModel, pyramidPos);
+
+
+    lightShader.activate();
+    glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+    glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+    shaderProgram.activate();
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
+    glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+    glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 
     Texture texWater("bricks16x.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_UNSIGNED_BYTE);
     texWater.texUnit(shaderProgram, "tex0", 0);
@@ -102,15 +165,22 @@ int main() {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shaderProgram.activate();
-
         camera.registerInputs(window);
 
-        camera.matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+        camera.updateMatrix(45.0f, 0.1f, 100.0f);
+
+        shaderProgram.activate();
+        camera.exportMatrix(shaderProgram, "camMatrix");
 
         texWater.bind();
         VAO1.bind();
         glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
+
+        lightShader.activate();
+        camera.exportMatrix(lightShader, "camMatrix");
+        lightVAO.bind();
+        glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
